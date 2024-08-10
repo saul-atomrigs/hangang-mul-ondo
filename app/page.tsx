@@ -3,32 +3,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { quotes } from '@/app/lib/quotes';
 
-interface WaterData {
-  MSR_DATE: string;
-  MSR_TIME: string;
-  SITE_ID: string;
-  W_TEMP: string;
-}
-
 export default function Home() {
-  const [noryangjinTemp, setNoryangjinTemp] = useState<string | null>(null);
+  const [hangangTemperature, setHangangTemperature] = useState<string | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   useEffect(() => {
     axios
-      .get(
-        'http://openapi.seoul.go.kr:8088/4b7a545473736f6c35307244427141/json/WPOSInformationTime/1/5/'
-      )
+      .get('/api/water-data')
       .then((response) => {
-        const data: WaterData[] = response.data.WPOSInformationTime.row;
-        const noryangjinData = data.find((site) => site.SITE_ID === '노량진');
-        if (noryangjinData) {
-          setNoryangjinTemp(noryangjinData.W_TEMP);
-        } else {
-          setError('한강 수온 데이터가 없습니다. 잠시 후 다시 시도해주세요.');
-        }
+        setHangangTemperature(response.data);
       })
       .catch((error) => {
         console.error('Error fetching the water data', error);
@@ -48,14 +35,15 @@ export default function Home() {
         <h1 className='text-2xl font-bold mb-4'>한강 수온</h1>
         {error ? (
           <p className='text-red-500'>{error}</p>
-        ) : noryangjinTemp ? (
+        ) : hangangTemperature ? (
           <>
             <p className='text-xl'>
-              현재 수온: <span className='font-bold'>{noryangjinTemp}°C</span>
+              현재 수온:{' '}
+              <span className='font-bold'>{hangangTemperature}°C</span>
             </p>
 
             <p>
-              {+noryangjinTemp > 30
+              {+hangangTemperature > 30
                 ? '따뜻해요, 발만 담그세요.'
                 : '차가워요, 들어가지 마세요'}
             </p>
