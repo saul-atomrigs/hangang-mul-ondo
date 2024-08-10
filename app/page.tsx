@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { quotes } from '@/app/lib/quotes';
 
 interface WaterData {
   MSR_DATE: string;
@@ -12,6 +13,8 @@ interface WaterData {
 export default function Home() {
   const [noryangjinTemp, setNoryangjinTemp] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   useEffect(() => {
     axios
@@ -41,14 +44,35 @@ export default function Home() {
         <div className='wave-animation wave2'></div>
       </div>
 
-      <div className='relative z-10 bg-white p-6 rounded-lg shadow-lg text-center'>
+      <div className='relative z-10 bg-white p-6 m-3 rounded-lg shadow-lg text-center'>
         <h1 className='text-2xl font-bold mb-4'>한강 수온</h1>
         {error ? (
           <p className='text-red-500'>{error}</p>
         ) : noryangjinTemp ? (
-          <p className='text-xl'>
-            현재 수온: <span className='font-bold'>{noryangjinTemp}°C</span>
-          </p>
+          <>
+            <p className='text-xl'>
+              현재 수온: <span className='font-bold'>{noryangjinTemp}°C</span>
+            </p>
+
+            <p>
+              {+noryangjinTemp > 30
+                ? '따뜻해요, 발만 담그세요.'
+                : '차가워요, 들어가지 마세요'}
+            </p>
+
+            {/* Investment Quote Section */}
+            <div className='mt-8 p-4 bg-gray-100 rounded-lg shadow-md'>
+              <p className='text-lg italic text-gray-700'>
+                {randomQuote.korean}
+              </p>
+              <p className='text-sm italic text-gray-500 mt-1'>
+                {randomQuote.english}
+              </p>
+              <p className='text-sm font-semibold text-gray-600 mt-3 text-right'>
+                - {randomQuote.author}
+              </p>
+            </div>
+          </>
         ) : (
           <p>Loading...</p>
         )}
