@@ -7,6 +7,16 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: '한강물온도',
   description: '현재 한강 물 온도는 몇 도?',
+  openGraph: {
+    images: [
+      {
+        url: '/open-graph-thumbnail.jpg',
+        width: 800,
+        height: 600,
+        alt: '한강물온도',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
